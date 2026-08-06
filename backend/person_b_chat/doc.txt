@@ -1,0 +1,62 @@
+**Backend Setup Instructions — Exact Steps**
+
+**1. Language & Framework**
+- Use **Python 3.10+**
+- Framework: **FastAPI**
+- Install: `pip install fastapi uvicorn python-dotenv requests`
+
+**2. LLM Library**
+- Use **Groq** (free, fast, easy) → `pip install groq`
+- Or if using Gemini instead → `pip install google-generativeai`
+- Pick ONE, don't mix both
+
+**3. Git Repo Setup**
+- One person (you or your teammate) creates a single GitHub repo, e.g. `digital-citizen-assistant`
+- Everyone gets added as collaborator
+- Folder structure inside repo:
+```
+digital-citizen-assistant/
+  backend/
+    person_a_matcher/     ← teammate's scheme matcher code
+    person_b_chat/        ← Mavi's chat/LLM code
+    main.py                ← combines both, runs the app
+  frontend/                ← frontend team's code
+  README.md
+```
+
+**4. Mavi's specific folder**
+- Work only inside `backend/person_b_chat/`
+- Create files:
+  - `chat.py` → your FastAPI route logic
+  - `.env` → your API key (add `.env` to `.gitignore`, NEVER push API keys to git)
+  - `requirements.txt` → list of libraries you used
+
+**5. Git workflow (to avoid conflicts)**
+- Before starting work each time: `git pull`
+- Create your own branch: `git checkout -b mavi-chat-work`
+- Commit regularly: `git add . && git commit -m "added chat flow"`
+- Push your branch: `git push origin mavi-chat-work`
+- Do NOT push directly to `main` — merge only when both parts are tested together
+
+**6. Environment file (`.env`) — put this in it:**
+```
+GROQ_API_KEY=your_key_here
+```
+Load it in code using `python-dotenv`:
+```python
+from dotenv import load_dotenv
+import os
+load_dotenv()
+api_key = os.getenv("GROQ_API_KEY")
+```
+
+**7. Run the server locally**
+- Command: `uvicorn main:app --reload`
+- Test endpoint at: `http://127.0.0.1:8000/chat` using Postman
+
+**8. Before submission**
+- Push all code to the shared repo on your branch
+- Merge with teammate's `person_a_matcher` code into one working `main.py`
+- Test full flow together once, on either laptop
+
+ needs: Python + FastAPI + Groq/Gemini + dotenv, working in his own folder, own branch, merging only at the end.
