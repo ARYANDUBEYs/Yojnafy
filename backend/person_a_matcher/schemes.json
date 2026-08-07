@@ -1,0 +1,24 @@
+[
+  {
+    "id": 1,
+    "name": "PM Kisan Samman Nidhi",
+    "category": "agriculture",
+    "min_age": 18,
+    "max_age": 100,
+    "max_income": 200000,
+    "occupation": "farmer",
+    "state": "all",
+    "description": "Income support of Rs 6000 per year for small and marginal farmers"
+  },
+  {
+    "id": 2,
+    "name": "National Scholarship Portal - Post Matric",
+    "category": "education",
+    "min_age": 16,
+    "max_age": 30,
+    "max_income": 250000,
+    "occupation": "student",
+    "state": "all",
+    "description": "Scholarship for students from economically weaker sections pursuing post-matric education"
+  }
+]
