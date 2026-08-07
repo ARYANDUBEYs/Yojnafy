@@ -1,7 +1,7 @@
 function TypingIndicator() {
   return (
-    <div className="typing">
-      Bot is typing...
+    <div className="typing-indicator">
+      <span>Bot is typing...</span>
     </div>
   );
 }
