@@ -3,10 +3,17 @@ import ChatWindow from "../components/ChatWindow";
 
 function ChatPage() {
   return (
-    <>
+    <div className="chat-page">
+
       <Navbar />
-      <ChatWindow />
-    </>
+
+      <main className="chat-container">
+
+        <ChatWindow />
+
+      </main>
+
+    </div>
   );
 }
 

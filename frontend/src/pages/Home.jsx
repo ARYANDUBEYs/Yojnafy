@@ -4,11 +4,17 @@ import ChatWindow from "../components/ChatWindow";
 
 function Home() {
   return (
-    <>
+    <div className="home-page">
+
       <Navbar />
+
       <Hero />
-      <ChatWindow />
-    </>
+
+      <main className="chat-container">
+        <ChatWindow />
+      </main>
+
+    </div>
   );
 }
 
