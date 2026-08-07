@@ -1,8 +1,11 @@
+import { useLanguage } from "../context/LanguageContext";
+
 function WelcomeMessage() {
+  const { t } = useLanguage();
+
   return (
-    <div className="bot-message">
-      Namaste! I can help you find government schemes you're eligible for.
-      Aap Hindi ya English mein baat kar sakte hain.
+    <div className="chat-bubble bot-message">
+      {t.firstMessage}
     </div>
   );
 }

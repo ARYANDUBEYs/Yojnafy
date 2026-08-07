@@ -1,7 +1,11 @@
+import { useLanguage } from "../context/LanguageContext";
+
 function TypingIndicator() {
+  const { t } = useLanguage();
+
   return (
     <div className="typing-indicator">
-      <span>Bot is typing...</span>
+      {t.typing}
     </div>
   );
 }

@@ -1,8 +1,12 @@
+import { LanguageProvider } from "./context/LanguageContext";
 import Home from "./pages/Home";
-import "./App.css";
 
 function App() {
-  return <Home />;
+  return (
+    <LanguageProvider>
+      <Home />
+    </LanguageProvider>
+  );
 }
 
 export default App;

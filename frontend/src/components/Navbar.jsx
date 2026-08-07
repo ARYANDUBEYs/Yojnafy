@@ -1,11 +1,18 @@
 import LanguageSelector from "./LanguageSelector";
+import { useLanguage } from "../context/LanguageContext";
 
 function Navbar() {
+  const { t } = useLanguage();
+
   return (
     <nav className="navbar">
-      <h2>Digital Citizen Assistant</h2>
+
+      <div className="navbar-title">
+        {t.appName}
+      </div>
 
       <LanguageSelector />
+
     </nav>
   );
 }

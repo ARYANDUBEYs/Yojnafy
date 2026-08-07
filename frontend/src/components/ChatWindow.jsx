@@ -1,51 +1,45 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import ChatBubble from "./ChatBubble";
-import TypingIndicator from "./TypingIndicator";
 import WelcomeMessage from "./WelcomeMessage";
+import TypingIndicator from "./TypingIndicator";
+import { useLanguage } from "../context/LanguageContext";
 
 function ChatWindow() {
-  const [messages, setMessages] = useState([
+  const { t } = useLanguage();
+
+  const chatEndRef = useRef(null);
+
+  const messages = [
     {
       id: 1,
       sender: "bot",
-      text: "Namaste! I can help you find government schemes you're eligible for. Aap Hindi ya English mein baat kar sakte hain.",
+      text: t.firstMessage
     },
     {
       id: 2,
       sender: "bot",
-      text: "What is your age?",
-    },
-  ]);
+      text: t.ageQuestion
+    }
+  ];
 
-  const [isTyping, setIsTyping] = useState(false);
-
-  const chatEndRef = useRef(null);
-
-  // Automatically scroll to the latest message
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({
-      behavior: "smooth",
+      behavior: "smooth"
     });
-  }, [messages, isTyping]);
+  }, [messages]);
 
   return (
-    <div className="chat-container">
+    <div className="chat-window">
 
-      <div className="chat-window">
+      {messages.map((message) => (
+        <ChatBubble
+          key={message.id}
+          message={message.text}
+          sender={message.sender}
+        />
+      ))}
 
-        {messages.map((message) => (
-          <ChatBubble
-            key={message.id}
-            sender={message.sender}
-            text={message.text}
-          />
-        ))}
-
-        {isTyping && <TypingIndicator />}
-
-        <div ref={chatEndRef} />
-
-      </div>
+      <div ref={chatEndRef}></div>
 
     </div>
   );
