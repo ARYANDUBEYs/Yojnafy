@@ -116,6 +116,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from services.conversation_manager import conversation_manager
+from services.eligibility_engine import eligibility_engine
 from services.llm_service import extract_user_information
 
 
@@ -179,20 +180,38 @@ def chat(request: ChatRequest):
 
     # 4. Check if all required information is collected
 
+    # if conversation_manager.is_complete(session_id):
+
+    #     profile = conversation_manager.get_profile(
+    #         session_id
+    #     )
+
+    #     return {
+    #         "session_id": session_id,
+    #         "reply": (
+    #             "Thank you. We have collected "
+    #             "all the required information."
+    #         ),
+    #         "completed": True,
+    #         "profile": profile.model_dump()
+    #     }
+
     if conversation_manager.is_complete(session_id):
 
-        profile = conversation_manager.get_profile(
-            session_id
-        )
+        profile = conversation_manager.get_profile(session_id)
+
+    # Convert Pydantic profile to dictionary
+        user = profile.model_dump()
+
+    # Find eligible schemes
+        matched_schemes = eligibility_engine.get_matching_schemes(user)
 
         return {
             "session_id": session_id,
-            "reply": (
-                "Thank you. We have collected "
-                "all the required information."
-            ),
+            "reply": "Based on your details, here are the schemes you may be eligible for.",
             "completed": True,
-            "profile": profile.model_dump()
+            "profile": user,
+            "matched_schemes": matched_schemes
         }
 
 
