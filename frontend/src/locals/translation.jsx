@@ -12,12 +12,18 @@ const translations = {
 
     ageQuestion: "What is your age?",
 
+    occupationQuestion: "What is your occupation?",
+
+    incomeQuestion: "What is your annual income?",
+
+    stateQuestion: "Which state do you live in?",
+
+    categoryQuestion: "What is your category?",
+
+    completedMessage:
+      "Thank you! I have collected all the information I need. Finding suitable government schemes for you...",
+
     language: "Language",
-
-    english: "English",
-    hindi: "हिन्दी",
-
-    typing: "Typing..."
   },
 
   hi: {
@@ -33,13 +39,19 @@ const translations = {
 
     ageQuestion: "आपकी उम्र क्या है?",
 
+    occupationQuestion: "आपका व्यवसाय क्या है?",
+
+    incomeQuestion: "आपकी वार्षिक आय कितनी है?",
+
+    stateQuestion: "आप किस राज्य में रहते हैं?",
+
+    categoryQuestion: "आपकी श्रेणी क्या है?",
+
+    completedMessage:
+      "धन्यवाद! मुझे आपकी सभी आवश्यक जानकारी मिल गई है। आपके लिए उपयुक्त सरकारी योजनाएँ खोजी जा रही हैं...",
+
     language: "भाषा",
-
-    english: "English",
-    hindi: "हिन्दी",
-
-    typing: "टाइप कर रहे हैं..."
-  }
+  },
 };
 
 export default translations;

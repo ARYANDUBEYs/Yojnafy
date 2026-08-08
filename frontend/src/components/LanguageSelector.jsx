@@ -1,10 +1,10 @@
 import { useLanguage } from "../context/LanguageContext";
 
 function LanguageSelector() {
-  const { language, changeLanguage, t } = useLanguage();
+  const { language, changeLanguage } = useLanguage();
 
-  const handleChange = (event) => {
-    changeLanguage(event.target.value);
+  const handleChange = (e) => {
+    changeLanguage(e.target.value);
   };
 
   return (
@@ -12,8 +12,8 @@ function LanguageSelector() {
       <span className="language-icon">🌐</span>
 
       <select value={language} onChange={handleChange}>
-        <option value="en">{t.english}</option>
-        <option value="hi">{t.hindi}</option>
+        <option value="en">English</option>
+        <option value="hi">हिन्दी</option>
       </select>
     </div>
   );

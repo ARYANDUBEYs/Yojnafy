@@ -1,11 +1,11 @@
-function ChatBubble({ message, sender = "bot" }) {
+function ChatBubble({ text, sender = "bot" }) {
   return (
     <div
       className={`chat-bubble ${
         sender === "user" ? "user-message" : "bot-message"
       }`}
     >
-      {message}
+      {text}
     </div>
   );
 }
