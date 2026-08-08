@@ -1,0 +1,228 @@
+import os
+from datetime import datetime
+
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.enums import TA_CENTER
+from reportlab.lib.units import mm
+from reportlab.platypus import (
+    SimpleDocTemplate,
+    Paragraph,
+    Spacer,
+    Table,
+    TableStyle,
+)
+from reportlab.lib import colors
+
+
+# Folder where generated PDFs will be stored
+PDF_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(__file__)),
+    "generated_pdfs"
+)
+
+os.makedirs(PDF_DIR, exist_ok=True)
+
+
+def generate_scheme_pdf(profile, matched_schemes):
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    filename = f"scheme_summary_{timestamp}.pdf"
+
+    filepath = os.path.join(
+        PDF_DIR,
+        filename
+    )
+
+    document = SimpleDocTemplate(
+        filepath,
+        pagesize=A4,
+        rightMargin=20 * mm,
+        leftMargin=20 * mm,
+        topMargin=20 * mm,
+        bottomMargin=20 * mm,
+    )
+
+    styles = getSampleStyleSheet()
+
+    title_style = ParagraphStyle(
+        "TitleCustom",
+        parent=styles["Title"],
+        alignment=TA_CENTER,
+        fontSize=18,
+        spaceAfter=15,
+    )
+
+    heading_style = ParagraphStyle(
+        "HeadingCustom",
+        parent=styles["Heading2"],
+        fontSize=13,
+        spaceBefore=10,
+        spaceAfter=8,
+    )
+
+    normal_style = ParagraphStyle(
+        "NormalCustom",
+        parent=styles["Normal"],
+        fontSize=10,
+        leading=15,
+    )
+
+    story = []
+
+    # TITLE
+
+    story.append(
+        Paragraph(
+            "Digital Citizen Assistant",
+            title_style
+        )
+    )
+
+    story.append(
+        Paragraph(
+            "Government Scheme Eligibility Summary",
+            styles["Heading2"]
+        )
+    )
+
+    story.append(Spacer(1, 10))
+
+    # USER PROFILE
+
+    story.append(
+        Paragraph(
+            "Citizen Profile",
+            heading_style
+        )
+    )
+
+    profile_data = [
+        ["Field", "Information"],
+        ["Age", str(profile.age)],
+        ["Occupation", str(profile.occupation)],
+        ["Annual Family Income", f"₹{profile.income:,}"],
+        ["State", str(profile.state)],
+        ["Category", str(profile.category)],
+    ]
+
+    profile_table = Table(
+        profile_data,
+        colWidths=[60 * mm, 100 * mm]
+    )
+
+    profile_table.setStyle(
+        TableStyle([
+            ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+            ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+            ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+            ("FONTNAME", (0, 1), (0, -1), "Helvetica-Bold"),
+            ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ("PADDING", (0, 0), (-1, -1), 6),
+        ])
+    )
+
+    story.append(profile_table)
+
+    story.append(Spacer(1, 15))
+
+    # MATCHED SCHEMES
+
+    story.append(
+        Paragraph(
+            "Eligible Government Schemes",
+            heading_style
+        )
+    )
+
+    if not matched_schemes:
+
+        story.append(
+            Paragraph(
+                "No matching schemes were found based on "
+                "the information provided.",
+                normal_style
+            )
+        )
+
+    else:
+
+        for index, scheme in enumerate(
+            matched_schemes,
+            start=1
+        ):
+
+            story.append(
+                Paragraph(
+                    f"{index}. {scheme['name']}",
+                    styles["Heading3"]
+                )
+            )
+
+            story.append(
+                Paragraph(
+                    scheme.get(
+                        "description",
+                        "No description available."
+                    ),
+                    normal_style
+                )
+            )
+
+            story.append(Spacer(1, 8))
+
+            # Eligibility information
+
+            eligibility_data = [
+                ["Requirement", "Value"],
+                ["Age", f"{scheme['min_age']} - {scheme['max_age']}"],
+                ["Maximum Income", f"₹{scheme['max_income']:,}"],
+                ["Occupation", scheme["occupation"]],
+                ["State", scheme["state"]],
+            ]
+
+            eligibility_table = Table(
+                eligibility_data,
+                colWidths=[60 * mm, 100 * mm]
+            )
+
+            eligibility_table.setStyle(
+                TableStyle([
+                    ("BACKGROUND", (0, 0), (-1, 0), colors.lightgrey),
+                    ("GRID", (0, 0), (-1, -1), 0.5, colors.grey),
+                    ("FONTNAME", (0, 0), (-1, 0), "Helvetica-Bold"),
+                    ("PADDING", (0, 0), (-1, -1), 5),
+                ])
+            )
+
+            story.append(eligibility_table)
+
+            story.append(Spacer(1, 15))
+
+    # DISCLAIMER
+    
+    story.append(
+        Paragraph(
+            "<b>Important:</b> This document is an eligibility "
+            "guidance summary generated by Digital Citizen Assistant. "
+            "Final eligibility is determined by the respective "
+            "government department. Please verify the latest "
+            "requirements on the official government portal before "
+            "applying.",
+            normal_style
+        )
+    )
+
+    story.append(Spacer(1, 10))
+
+    story.append(
+        Paragraph(
+            f"Generated on: {datetime.now().strftime('%d-%m-%Y %H:%M')}",
+            normal_style
+        )
+    )
+
+    document.build(story)
+
+    return filepath

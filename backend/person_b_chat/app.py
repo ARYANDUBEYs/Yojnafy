@@ -8,6 +8,7 @@ from sarvamai import SarvamAI
 from sarvamai.play import save
 
 from routes.chat import router as chat_router
+from routes.pdf import router as pdf_router
 
 
 load_dotenv()
@@ -25,6 +26,7 @@ if sarvam_api_key:
 app = FastAPI()
 
 app.include_router(chat_router)
+app.include_router(pdf_router)
 
 def load_schemes():
     with open("schemes.json", "r") as f:#open json file in r mode i.e. read-mode

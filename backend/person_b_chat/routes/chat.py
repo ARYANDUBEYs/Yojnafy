@@ -111,6 +111,7 @@
 #         "reply": next_question,
 #         "completed": False
 #     }
+import os
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
@@ -118,6 +119,7 @@ from pydantic import BaseModel
 from services.conversation_manager import conversation_manager
 from services.eligibility_engine import eligibility_engine
 from services.llm_service import extract_user_information
+from services.pdf_generator import generate_scheme_pdf
 
 
 router = APIRouter(
@@ -196,23 +198,61 @@ def chat(request: ChatRequest):
     #         "profile": profile.model_dump()
     #     }
 
+    # if conversation_manager.is_complete(session_id):
+
+    #     profile = conversation_manager.get_profile(session_id)
+
+    # # Convert Pydantic profile to dictionary
+    #     user = profile.model_dump()
+
+    # # Find eligible schemes
+    #     matched_schemes = eligibility_engine.get_matching_schemes(user)
+
+    #     return {
+    #         "session_id": session_id,
+    #         "reply": "Based on your details, here are the schemes you may be eligible for.",
+    #         "completed": True,
+    #         "profile": user,
+    #         "matched_schemes": matched_schemes
+    #     }
     if conversation_manager.is_complete(session_id):
 
         profile = conversation_manager.get_profile(session_id)
 
-    # Convert Pydantic profile to dictionary
-        user = profile.model_dump()
+    # -----------------------------------------
+    # Eligibility Engine
+    # -----------------------------------------
 
-    # Find eligible schemes
-        matched_schemes = eligibility_engine.get_matching_schemes(user)
+        matched_schemes = eligibility_engine.get_matching_schemes(
+            profile.model_dump()
+        )
+
+    # -----------------------------------------
+    # Generate PDF
+    # -----------------------------------------
+
+        pdf_path = generate_scheme_pdf(
+            profile,
+            matched_schemes
+        )
+        pdf_filename = os.path.basename(pdf_path)
 
         return {
             "session_id": session_id,
-            "reply": "Based on your details, here are the schemes you may be eligible for.",
+            "reply": (
+            "Based on your details, here are the schemes "
+            "you may be eligible for."
+            ),
             "completed": True,
-            "profile": user,
-            "matched_schemes": matched_schemes
-        }
+            "profile": profile.model_dump(),
+            "matched_schemes": matched_schemes,
+            "pdf": {
+                 "available": True,
+                 "filename": pdf_filename,
+                 "download_url": f"/pdf/{pdf_filename}"
+            }
+    }
+
 
 
     # 5. Ask for the next missing field
