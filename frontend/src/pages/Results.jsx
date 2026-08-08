@@ -7,7 +7,7 @@ import { dummySchemes } from "../data/schemes";
 
 function Results() {
   const [schemes, setSchemes] = useState(dummySchemes);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
   if (loading) {
@@ -27,7 +27,7 @@ function Results() {
       <div className="max-w-5xl mx-auto py-10 px-6">
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
           <h1 className="text-4xl font-bold text-blue-700">
-            🇮🇳 Digital Citizen Assistant
+            YojnaFy - AI Powered Smart Scheme Navigaotr
           </h1>
 
           <p className="text-gray-600 mt-3 text-lg">Smart Scheme Navigator</p>
