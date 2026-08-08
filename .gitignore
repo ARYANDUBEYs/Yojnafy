@@ -4,3 +4,4 @@ node_modules/
 *.pyc
 venv/
 *.wav
+generated_pdfs/
