@@ -1,12 +1,7 @@
-import { LanguageProvider } from "./context/LanguageContext";
-import Home from "./pages/Home";
+import Results from "./pages/Results";
 
 function App() {
-  return (
-    <LanguageProvider>
-      <Home />
-    </LanguageProvider>
-  );
+  return <Results />;
 }
 
 export default App;
