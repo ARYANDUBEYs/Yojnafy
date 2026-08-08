@@ -1,6 +1,7 @@
 const translations = {
   en: {
-    appName: "Digital Citizen Assistant",
+    appName: "YojnaFy",
+tagline: "AI Powered Smart Scheme Navigator",
 
     welcome: "Welcome",
 
@@ -27,7 +28,8 @@ const translations = {
   },
 
   hi: {
-    appName: "डिजिटल नागरिक सहायक",
+    appName: "YojnaFy",
+tagline: "AI द्वारा संचालित स्मार्ट योजना नेविगेटर",
 
     welcome: "स्वागत है",
 

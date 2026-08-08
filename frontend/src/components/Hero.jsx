@@ -7,7 +7,7 @@ function Hero() {
     <section className="hero">
 
       <h1>{t.welcome}</h1>
-
+<p>{t.tagline}</p>
       <p>{t.description}</p>
 
     </section>
