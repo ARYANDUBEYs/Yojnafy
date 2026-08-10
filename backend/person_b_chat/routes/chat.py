@@ -117,7 +117,7 @@ from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 
 from services.conversation_manager import conversation_manager
-from services.eligibility_engine import eligibility_engine
+from shared.eligibility_engine import get_matching_schemes
 from services.llm_service import extract_user_information
 from services.pdf_generator import generate_scheme_pdf
 
@@ -223,9 +223,9 @@ def chat(request: ChatRequest):
     # Eligibility Engine
     # -----------------------------------------
 
-        matched_schemes = eligibility_engine.get_matching_schemes(
-            profile.model_dump()
-        )
+        matched_schemes = get_matching_schemes(
+    profile.model_dump()
+)
 
     # -----------------------------------------
     # Generate PDF

@@ -120,7 +120,8 @@ from groq import Groq
 from pydantic import BaseModel, Field, field_validator
 
 
-load_dotenv()
+from pathlib import Path
+load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent / ".env")
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
@@ -176,7 +177,7 @@ intent:
 - agriculture
 - employment
 - housing
-- pension
+- pensionload_dotenv
 - healthcare
 - unknown
 
