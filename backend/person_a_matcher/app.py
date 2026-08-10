@@ -7,10 +7,13 @@ from fastapi import FastAPI, UploadFile, File
 import json
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 from sarvamai import SarvamAI
 from sarvamai.play import save
 
-load_dotenv()
+load_dotenv(
+    dotenv_path=Path(__file__).resolve().parent / ".env"
+)
 sarvam_client = SarvamAI(api_subscription_key=os.getenv("SARVAM_API_KEY"))
 
 app = FastAPI()

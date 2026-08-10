@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 
-import Navbar from "../components/Navbar";
-import ChatMessage from "../components/ChatMessage";
-import SchemeCard from "../components/SchemeCard";
-import DocumentChecklist from "../components/DocumentChecklist";
+import Navbar from "../Components/Navbar";
+import ChatMessage from "../Components/ChatMessage";
+import SchemeCard from "../Components/SchemeCard";
+import DocumentChecklist from "../Components/DocumentChecklist";
 
 function Home() {
   // =========================
@@ -29,6 +29,7 @@ function Home() {
   // =========================
 
   const [input, setInput] = useState("");
+  const [sessionId, setSessionId] = useState(null);
 
   // =========================
   // Loading / typing state
@@ -70,47 +71,78 @@ function Home() {
   // Send message
   // =========================
 
-  const handleSend = () => {
-    const text = input.trim();
+  const handleSend = async () => {
+  const text = input.trim();
 
-    if (!text || isLoading) {
-      return;
+  if (!text || isLoading) {
+    return;
+  }
+
+  // Add user message immediately
+  setMessages((previousMessages) => [
+    ...previousMessages,
+    {
+      id: Date.now(),
+      sender: "user",
+      message: text,
+    },
+  ]);
+
+  setInput("");
+  setIsLoading(true);
+
+  try {
+    const response = await fetch("http://localhost:8000/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        session_id: sessionId,
+        message: text,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Backend returned ${response.status}`);
     }
 
-    // Add user message
+    const data = await response.json();
+
+    // Save session ID returned by backend
+    if (data.session_id) {
+      setSessionId(data.session_id);
+    }
+
+    // Add backend reply
     setMessages((previousMessages) => [
       ...previousMessages,
       {
-        id: Date.now(),
-        sender: "user",
-        message: text,
+        id: Date.now() + 1,
+        sender: "bot",
+        message: data.reply,
       },
     ]);
 
-    // Clear input
-    setInput("");
+    // Show matched schemes when conversation is complete
+    if (data.completed && data.matched_schemes) {
+      setSchemes(data.matched_schemes);
+    }
+  } catch (error) {
+  console.error("Chat request failed:", error);
 
-    // Show loading state
-    setIsLoading(true);
-
-    // Temporary response.
-    // This will be replaced with the real
-    // FastAPI /chat response later.
-
-    setTimeout(() => {
-      setMessages((previousMessages) => [
-        ...previousMessages,
-        {
-          id: Date.now() + 1,
-          sender: "bot",
-          message:
-            "Received. I am processing your information...",
-        },
-      ]);
-
-      setIsLoading(false);
-    }, 800);
-  };
+  setMessages((previousMessages) => [
+    ...previousMessages,
+    {
+      id: Date.now() + 1,
+      sender: "bot",
+      message: `Backend error: ${error.message}`,
+    },
+  ]);
+} finally {
+    setIsLoading(false);
+  }
+};
 
   // =========================
   // Enter key
