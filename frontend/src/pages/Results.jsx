@@ -27,7 +27,7 @@ function Results() {
       <div className="max-w-5xl mx-auto py-10 px-6">
         <div className="bg-white rounded-2xl shadow-lg p-8 mb-8">
           <h1 className="text-4xl font-bold text-blue-700">
-            YojnaFy - AI Powered Smart Scheme Navigaotr
+            YojnaFy - AI Powered Smart Scheme Navigator
           </h1>
 
           <p className="text-gray-600 mt-3 text-lg">Smart Scheme Navigator</p>
