@@ -31,7 +31,7 @@ function ChatWindow({ userMessage, onQuestionChange }) {
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
 
-  // Reset chat when language changes
+  // Reset chat when language changess
   useEffect(() => {
     setMessages([
       {
