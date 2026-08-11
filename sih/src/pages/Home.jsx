@@ -71,14 +71,13 @@ function Home() {
   // Send message
   // =========================
 
-  const handleSend = async () => {
+ const handleSend = async () => {
   const text = input.trim();
 
   if (!text || isLoading) {
     return;
   }
 
-  // Add user message immediately
   setMessages((previousMessages) => [
     ...previousMessages,
     {
@@ -91,30 +90,40 @@ function Home() {
   setInput("");
   setIsLoading(true);
 
-  try {
-    const response = await fetch("http://localhost:8000/chat", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        session_id: sessionId,
-        message: text,
-      }),
-    });
+  const sendWithRetry = async (retries = 1) => {
+    try {
+      const response = await fetch("/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          session_id: sessionId,
+          message: text,
+        }),
+      });
 
-    if (!response.ok) {
-      throw new Error(`Backend returned ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`Backend returned ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      if (retries > 0) {
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+        return sendWithRetry(retries - 1);
+      }
+      throw error;
     }
+  };
 
-    const data = await response.json();
+  try {
+    const data = await sendWithRetry(1);
 
-    // Save session ID returned by backend
     if (data.session_id) {
       setSessionId(data.session_id);
     }
 
-    // Add backend reply
     setMessages((previousMessages) => [
       ...previousMessages,
       {
@@ -124,22 +133,21 @@ function Home() {
       },
     ]);
 
-    // Show matched schemes when conversation is complete
     if (data.completed && data.matched_schemes) {
       setSchemes(data.matched_schemes);
     }
   } catch (error) {
-  console.error("Chat request failed:", error);
+    console.error("Chat request failed:", error);
 
-  setMessages((previousMessages) => [
-    ...previousMessages,
-    {
-      id: Date.now() + 1,
-      sender: "bot",
-      message: `Backend error: ${error.message}`,
-    },
-  ]);
-} finally {
+    setMessages((previousMessages) => [
+      ...previousMessages,
+      {
+        id: Date.now() + 1,
+        sender: "bot",
+        message: `Backend error: ${error.message}`,
+      },
+    ]);
+  } finally {
     setIsLoading(false);
   }
 };
