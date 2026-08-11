@@ -14,7 +14,8 @@ sys.path.append(
         "person_b_chat"
     )
 )
-
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -42,9 +43,9 @@ app.include_router(chat_router)
 app.include_router(pdf_router)
 
 
-@app.get("/")
-def read_root():
-    return {"message": "Yojnafy backend is running"}
+# @app.get("/")
+# def read_root():
+#     return {"message": "Yojnafy backend is running"}
 
 
 @app.get("/schemes")
@@ -109,3 +110,11 @@ def listen(
     return {
         "transcript": transcript
     }
+    
+# Serve React frontend static files
+app.mount("/assets", StaticFiles(directory="static/assets"), name="assets")
+
+
+@app.get("/{full_path:path}")
+async def serve_frontend(full_path: str):
+    return FileResponse("static/index.html")
