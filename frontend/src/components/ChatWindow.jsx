@@ -71,7 +71,7 @@ function ChatWindow({ userMessage, onQuestionChange }) {
       },
     ]);
 
-    // Move to next question
+    // Move to next question immediately
     if (currentQuestion < questions.length - 1) {
       const nextQuestionIndex = currentQuestion + 1;
 
