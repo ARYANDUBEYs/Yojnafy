@@ -1,17 +1,9 @@
-export async function getSchemes() {
-  // Temporary dummy API
+import { dummySchemes } from "../data/schemes";
 
+export async function getSchemes() {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve([
-        {
-          id: 1,
-          name: "PM Scholarship",
-          description: "Financial assistance for eligible students.",
-          documents: ["Aadhaar Card", "Income Certificate", "PAN Card"],
-          portal: "https://scholarships.gov.in",
-        },
-      ]);
-    }, 2000);
+      resolve(dummySchemes);
+    }, 1000);
   });
 }

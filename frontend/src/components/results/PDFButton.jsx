@@ -2,15 +2,18 @@ import React from "react";
 
 function PDFButton() {
   const handleDownload = () => {
-    alert("PDF download will be connected to the backend soon.");
+    window.print();
   };
 
   return (
     <button
       onClick={handleDownload}
-      className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium"
+      className="group flex w-full items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-600/20 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-blue-600/25 active:translate-y-0"
     >
-      📥 Download as PDF
+      <span className="text-base transition-transform duration-200 group-hover:-translate-y-0.5">
+        📥
+      </span>
+      Download Document Checklist
     </button>
   );
 }
