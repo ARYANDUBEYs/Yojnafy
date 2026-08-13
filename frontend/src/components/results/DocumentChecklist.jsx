@@ -1,7 +1,7 @@
 import React from "react";
 import PDFButton from "./PDFButton";
 
-function DocumentChecklist({ documents = [], onClose }) {
+function DocumentChecklist({ documents = [], schemeName = "", onClose }) {
   return (
     <div
       className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/60 px-4 py-6 backdrop-blur-sm"
@@ -18,18 +18,15 @@ function DocumentChecklist({ documents = [], onClose }) {
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-xl text-white shadow-lg shadow-blue-500/20">
                 📄
               </div>
-
               <div>
                 <h2 className="text-xl font-bold text-slate-900">
                   Required Documents
                 </h2>
-
                 <p className="mt-1 text-sm text-slate-500">
                   Keep these documents ready before applying.
                 </p>
               </div>
             </div>
-
             {/* Close */}
             <button
               onClick={onClose}
@@ -47,7 +44,6 @@ function DocumentChecklist({ documents = [], onClose }) {
             <p className="text-sm font-semibold text-slate-700">
               Document checklist
             </p>
-
             <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-600">
               {documents.length} items
             </span>
@@ -63,12 +59,10 @@ function DocumentChecklist({ documents = [], onClose }) {
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-sm font-bold text-blue-600 shadow-sm ring-1 ring-slate-100">
                   {index + 1}
                 </div>
-
                 {/* Document */}
                 <span className="flex-1 text-sm font-medium text-slate-700">
                   {document}
                 </span>
-
                 {/* Check */}
                 <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-sm font-bold text-emerald-600">
                   ✓
@@ -81,19 +75,16 @@ function DocumentChecklist({ documents = [], onClose }) {
           <div className="mt-6 rounded-2xl border border-blue-100 bg-blue-50/60 p-4">
             <div className="mb-3 flex items-center gap-3">
               <span className="text-xl">📥</span>
-
               <div>
                 <p className="text-sm font-semibold text-slate-800">
                   Save your checklist
                 </p>
-
                 <p className="text-xs text-slate-500">
                   Download these requirements for later.
                 </p>
               </div>
             </div>
-
-            <PDFButton />
+            <PDFButton documents={documents} schemeName={schemeName} />
           </div>
 
           {/* Close button */}
@@ -110,4 +101,3 @@ function DocumentChecklist({ documents = [], onClose }) {
 }
 
 export default DocumentChecklist;
-//improved

@@ -1,20 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import ChatBubble from "./ChatBubble";
 import { useLanguage } from "../context/LanguageContext";
+import { sendChatMessage } from "../services/api";
 
 function ChatWindow({ userMessage, onQuestionChange }) {
   const { t } = useLanguage();
-
   const chatEndRef = useRef(null);
   const lastProcessedMessage = useRef("");
-
-  const questions = [
-    t.ageQuestion,
-    t.occupationQuestion,
-    t.incomeQuestion,
-    t.stateQuestion,
-    t.categoryQuestion,
-  ];
 
   const [messages, setMessages] = useState([
     {
@@ -25,13 +17,14 @@ function ChatWindow({ userMessage, onQuestionChange }) {
     {
       id: 2,
       sender: "bot",
-      text: questions[0],
+      text: t.ageQuestion,
     },
   ]);
 
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [sessionId, setSessionId] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Reset chat when language changess
+  // Reset chat when language changes
   useEffect(() => {
     setMessages([
       {
@@ -42,11 +35,10 @@ function ChatWindow({ userMessage, onQuestionChange }) {
       {
         id: 2,
         sender: "bot",
-        text: questions[0],
+        text: t.ageQuestion,
       },
     ]);
-
-    setCurrentQuestion(0);
+    setSessionId(null);
     lastProcessedMessage.current = "";
   }, [t]);
 
@@ -54,14 +46,11 @@ function ChatWindow({ userMessage, onQuestionChange }) {
   useEffect(() => {
     if (!userMessage || !userMessage.trim()) return;
 
-    // Don't process the exact same submitted message twice
     if (userMessage === lastProcessedMessage.current) {
       return;
     }
-
     lastProcessedMessage.current = userMessage;
 
-    // Add user's answer
     setMessages((prev) => [
       ...prev,
       {
@@ -71,65 +60,71 @@ function ChatWindow({ userMessage, onQuestionChange }) {
       },
     ]);
 
-    // Move to next question immediately
-    if (currentQuestion < questions.length - 1) {
-      const nextQuestionIndex = currentQuestion + 1;
+    setIsLoading(true);
 
-      setTimeout(() => {
+    sendChatMessage(sessionId, userMessage)
+      .then((data) => {
+        if (data.session_id) {
+          setSessionId(data.session_id);
+        }
+
         setMessages((prev) => [
           ...prev,
           {
-            id: Date.now(),
+            id: Date.now() + 1,
             sender: "bot",
-            text: questions[nextQuestionIndex],
+            text: data.reply,
           },
         ]);
 
-        setCurrentQuestion(nextQuestionIndex);
-
-        if (onQuestionChange) {
-          onQuestionChange(nextQuestionIndex);
+        if (data.completed && data.matched_schemes) {
+          if (onQuestionChange) {
+            onQuestionChange("completed", data.matched_schemes);
+          }
         }
-      }, 500);
-    } else {
-      // All questions completed
-      setTimeout(() => {
+      })
+      .catch((error) => {
+        console.error("Chat request failed:", error);
         setMessages((prev) => [
           ...prev,
           {
-            id: Date.now(),
+            id: Date.now() + 1,
             sender: "bot",
-            text: t.completedMessage,
+            text: `Backend error: ${error.message}`,
           },
         ]);
-
-        if (onQuestionChange) {
-          onQuestionChange("completed");
-        }
-      }, 500);
-    }
-  }, [userMessage, currentQuestion, t]);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [userMessage, sessionId]);
 
   // Auto-scroll
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({
       behavior: "smooth",
     });
-  }, [messages]);
+  }, [messages, isLoading]);
 
-return (
-  <div className="flex flex-col gap-5 p-5 sm:p-7">
-    {messages.map((message) => (
-      <ChatBubble
-        key={message.id}
-        text={message.text}
-        sender={message.sender}
-      />
-    ))}
+  return (
+    <div className="flex flex-col gap-5 p-5 sm:p-7">
+      {messages.map((message) => (
+        <ChatBubble
+          key={message.id}
+          text={message.text}
+          sender={message.sender}
+        />
+      ))}
 
-    <div ref={chatEndRef} />
-  </div>
-);
+      {isLoading && (
+        <div className="text-sm italic text-slate-400 px-2">
+          Assistant is typing...
+        </div>
+      )}
+
+      <div ref={chatEndRef} />
+    </div>
+  );
 }
 
 export default ChatWindow;

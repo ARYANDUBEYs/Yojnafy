@@ -4,10 +4,8 @@ import Loader from "../components/common/Loader";
 import ErrorState from "../components/common/ErrorState";
 import EmptyState from "../components/common/EmptyState";
 import SchemeCard from "../components/results/SchemeCard";
-import { dummySchemes } from "../data/schemes";
 
-function Results() {
-  const [schemes] = useState(dummySchemes);
+function Results({ schemes = [], onRestart }) {
   const [loading] = useState(false);
   const [error] = useState(false);
 

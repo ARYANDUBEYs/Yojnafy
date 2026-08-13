@@ -25,15 +25,14 @@ function ChatPage({ onComplete }) {
     }
   };
 
-  const handleQuestionChange = (question) => {
-    if (question === "completed") {
-      setIsCompleted(true);
-
-      if (onComplete) {
-        onComplete([]);
-      }
+ const handleQuestionChange = (question, schemes) => {
+  if (question === "completed") {
+    setIsCompleted(true);
+    if (onComplete) {
+      onComplete(schemes || []);
     }
-  };
+  }
+};
 
   return (
     <div

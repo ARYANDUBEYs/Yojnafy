@@ -1,8 +1,19 @@
 import React from "react";
+import jsPDF from "jspdf";
 
-function PDFButton() {
+function PDFButton({ documents = [], schemeName = "" }) {
   const handleDownload = () => {
-    window.print();
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text("Documents Required", 20, 20);
+    doc.setFontSize(12);
+    doc.text(schemeName, 20, 30);
+
+    documents.forEach((document, index) => {
+      doc.text(`${index + 1}. ${document}`, 20, 45 + index * 10);
+    });
+
+    doc.save(`${schemeName || "documents"}-checklist.pdf`);
   };
 
   return (
@@ -19,4 +30,3 @@ function PDFButton() {
 }
 
 export default PDFButton;
-//vv

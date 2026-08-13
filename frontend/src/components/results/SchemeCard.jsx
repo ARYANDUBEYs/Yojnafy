@@ -190,7 +190,7 @@ function SchemeCard({ scheme }) {
 
             {/* Apply button */}
             <button
-              onClick={() => window.open(scheme.portal, "_blank")}
+              onClick={() => window.open(scheme.official_url, "_blank")}
               className="rounded-xl bg-slate-900 px-3 py-3 text-sm font-semibold text-white transition-all hover:bg-blue-600 dark:bg-slate-800 dark:hover:bg-blue-600"
             >
               Apply ↗
@@ -201,11 +201,12 @@ function SchemeCard({ scheme }) {
 
       {/* Document modal */}
       {showDocuments && (
-        <DocumentChecklist
-          documents={scheme.documents}
-          onClose={() => setShowDocuments(false)}
-        />
-      )}
+  <DocumentChecklist
+    documents={scheme.documents}
+    schemeName={scheme.name}
+    onClose={() => setShowDocuments(false)}
+  />
+)}
     </>
   );
 }
