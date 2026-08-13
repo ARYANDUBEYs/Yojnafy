@@ -31,7 +31,7 @@ function ChatWindow({ userMessage, onQuestionChange }) {
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
 
-  
+  // Reset chat when language changess
   useEffect(() => {
     setMessages([
       {
@@ -50,17 +50,18 @@ function ChatWindow({ userMessage, onQuestionChange }) {
     lastProcessedMessage.current = "";
   }, [t]);
 
+  // Process submitted message
   useEffect(() => {
-    if (!userMessage) return;
+    if (!userMessage || !userMessage.trim()) return;
 
-    
+    // Don't process the exact same submitted message twice
     if (userMessage === lastProcessedMessage.current) {
       return;
     }
 
     lastProcessedMessage.current = userMessage;
 
-    
+    // Add user's answer
     setMessages((prev) => [
       ...prev,
       {
@@ -70,7 +71,7 @@ function ChatWindow({ userMessage, onQuestionChange }) {
       },
     ]);
 
-    
+    // Move to next question immediately
     if (currentQuestion < questions.length - 1) {
       const nextQuestionIndex = currentQuestion + 1;
 
@@ -78,7 +79,7 @@ function ChatWindow({ userMessage, onQuestionChange }) {
         setMessages((prev) => [
           ...prev,
           {
-            id: Date.now() + 1,
+            id: Date.now(),
             sender: "bot",
             text: questions[nextQuestionIndex],
           },
@@ -91,12 +92,12 @@ function ChatWindow({ userMessage, onQuestionChange }) {
         }
       }, 500);
     } else {
-      
+      // All questions completed
       setTimeout(() => {
         setMessages((prev) => [
           ...prev,
           {
-            id: Date.now() + 1,
+            id: Date.now(),
             sender: "bot",
             text: t.completedMessage,
           },
@@ -107,28 +108,28 @@ function ChatWindow({ userMessage, onQuestionChange }) {
         }
       }, 500);
     }
-  }, [userMessage, currentQuestion, t, onQuestionChange, questions]);
+  }, [userMessage, currentQuestion, t]);
 
-  
+  // Auto-scroll
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({
       behavior: "smooth",
     });
   }, [messages]);
 
-  return (
-    <div className="chat-window">
-      {messages.map((message) => (
-        <ChatBubble
-          key={message.id}
-          sender={message.sender}
-          text={message.text}
-        />
-      ))}
+return (
+  <div className="flex flex-col gap-5 p-5 sm:p-7">
+    {messages.map((message) => (
+      <ChatBubble
+        key={message.id}
+        text={message.text}
+        sender={message.sender}
+      />
+    ))}
 
-      <div ref={chatEndRef} />
-    </div>
-  );
+    <div ref={chatEndRef} />
+  </div>
+);
 }
 
 export default ChatWindow;

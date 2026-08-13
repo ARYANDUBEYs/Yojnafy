@@ -1,19 +1,19 @@
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
-import ChatWindow from "../components/ChatWindow";
+import { useTheme } from "../context/ThemeContext";
 
-function Home() {
+function Home({ onStart }) {
+  const { darkMode } = useTheme();
+
   return (
-    <div className="home-page">
-
+    <div
+      className={`min-h-screen transition-colors duration-300 ${
+        darkMode ? "bg-slate-950 text-white" : "bg-slate-50 text-slate-900"
+      }`}
+    >
       <Navbar />
 
-      <Hero />
-
-      <main className="chat-container">
-        <ChatWindow />
-      </main>
-
+      <Hero onStart={onStart} />
     </div>
   );
 }
